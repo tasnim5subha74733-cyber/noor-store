@@ -42,19 +42,19 @@
       color: white;
       font-size: 42px;
       font-weight: bold;
-      margin-bottom: 25px;
+      margin-bottom: 12px;
     }
 
     .splash-text {
       color: #ddd;
       font-size: 17px;
-      margin-bottom: 28px;
+      margin-bottom: 26px;
     }
 
     .loader {
-      width: 55px;
-      height: 55px;
-      border: 6px solid rgba(255,255,255,0.3);
+      width: 60px;
+      height: 60px;
+      border: 6px solid rgba(255,255,255,0.25);
       border-top-color: #25D366;
       border-radius: 50%;
       animation: spin 0.9s linear infinite;
@@ -91,7 +91,7 @@
       background: white;
       display: flex;
       justify-content: center;
-      gap: 25px;
+      gap: 24px;
       padding: 15px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
       position: sticky;
@@ -186,8 +186,6 @@
       background: #1daa50;
     }
 
-    /* Footer */
-
     footer {
       background: #111;
       color: white;
@@ -196,15 +194,9 @@
       line-height: 1.8;
     }
 
-    /* Mobile Responsive */
-
     @media (max-width: 600px) {
       .splash-logo {
         font-size: 34px;
-      }
-
-      header {
-        padding: 28px 12px;
       }
 
       header h1 {
@@ -235,22 +227,16 @@
 
 <body>
 
-  <!-- Splash Screen -->
-
   <div id="splash">
     <div class="splash-logo">Noor Store</div>
     <div class="splash-text">Loading your fashion collection...</div>
     <div class="loader"></div>
   </div>
 
-  <!-- Header -->
-
   <header>
     <h1>Fatematun Noor</h1>
     <p>Welcome to Noor Store</p>
   </header>
-
-  <!-- Navigation -->
 
   <nav>
     <a href="#">Home</a>
@@ -259,22 +245,15 @@
     <a href="#contact">Contact</a>
   </nav>
 
-  <!-- Hero Section -->
-
   <section class="hero">
     <h2>আমাদের নতুন কালেকশন</h2>
     <p>সুন্দর ও আধুনিক পোশাক সাশ্রয়ী দামে</p>
   </section>
 
-  <!-- Products -->
-
   <main class="products" id="products">
 
     <div class="card">
-      <img
-        src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f?w=800"
-        alt="Premium Panjabi">
-
+      <img src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f?w=800" alt="Premium Panjabi">
       <div class="card-content">
         <h3>Premium Panjabi</h3>
         <p class="price">৳1500</p>
@@ -283,10 +262,7 @@
     </div>
 
     <div class="card">
-      <img
-        src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=800"
-        alt="Stylish Shirt">
-
+      <img src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=800" alt="Stylish Shirt">
       <div class="card-content">
         <h3>Stylish Shirt</h3>
         <p class="price">৳1200</p>
@@ -295,10 +271,7 @@
     </div>
 
     <div class="card">
-      <img
-        src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800"
-        alt="Fashion T-Shirt">
-
+      <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800" alt="Fashion T-Shirt">
       <div class="card-content">
         <h3>Fashion T-Shirt</h3>
         <p class="price">৳800</p>
@@ -307,10 +280,7 @@
     </div>
 
     <div class="card">
-      <img
-        src="https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=800"
-        alt="Flower Design Dress">
-
+      <img src="https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=800" alt="Flower Design Dress">
       <div class="card-content">
         <h3>Flower Design Dress</h3>
         <p class="price">৳1800</p>
@@ -319,10 +289,7 @@
     </div>
 
     <div class="card">
-      <img
-        src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800"
-        alt="Modern Fashion Dress">
-
+      <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800" alt="Modern Fashion Dress">
       <div class="card-content">
         <h3>Modern Fashion Dress</h3>
         <p class="price">৳2000</p>
@@ -332,14 +299,10 @@
 
   </main>
 
-  <!-- Footer -->
-
   <footer id="contact">
     <p>অর্ডারের জন্য যোগাযোগ করুন</p>
     <p>Noor Store © 2026</p>
   </footer>
-
-  <!-- Splash Script -->
 
   <script>
     window.addEventListener("load", function () {
