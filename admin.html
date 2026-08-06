@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Noor Store Admin Panel</title>
+<title>Noor Store Admin</title>
 
 <style>
 
@@ -39,7 +39,7 @@ input,button{
 }
 
 button{
-    background:#008000;
+    background:green;
     color:white;
     cursor:pointer;
 }
@@ -48,7 +48,7 @@ button{
     background:#eee;
     padding:10px;
     margin-top:10px;
-    border-radius:5px;
+    border-radius:8px;
 }
 
 .delete{
@@ -56,14 +56,16 @@ button{
 }
 
 img{
-    max-width:100px;
+    max-width:120px;
 }
 
 </style>
 
 </head>
 
+
 <body>
+
 
 <header>
 <h2>🛒 Noor Store Admin</h2>
@@ -72,12 +74,14 @@ img{
 
 <div class="container">
 
-<h3>নতুন Product যোগ করুন</h3>
+<h3>Product Add করুন</h3>
 
 
 <input id="name" placeholder="Product Name">
 
+
 <input id="price" placeholder="Price">
+
 
 <input id="image" placeholder="Image URL">
 
@@ -96,27 +100,33 @@ Add Product
 </div>
 
 
+
 <script>
 
 
+// Local Storage থেকে Product লোড
+
 let products = JSON.parse(localStorage.getItem("products")) || [];
+
+
+showProducts();
 
 
 
 function addProduct(){
 
 
-let name = document.getElementById("name").value;
+let name = document.getElementById("name").value.trim();
 
-let price = document.getElementById("price").value;
+let price = document.getElementById("price").value.trim();
 
-let image = document.getElementById("image").value;
+let image = document.getElementById("image").value.trim();
 
 
 
-if(name=="" || price==""){
+if(!name || !price || !image){
 
-alert("সব তথ্য দিন");
+alert("সব তথ্য পূরণ করুন");
 
 return;
 
@@ -136,9 +146,13 @@ image:image
 
 
 
+// Save
+
 localStorage.setItem("products", JSON.stringify(products));
 
 
+
+// Clear Input
 
 document.getElementById("name").value="";
 
@@ -149,50 +163,6 @@ document.getElementById("image").value="";
 
 
 showProducts();
-
-
-}
-
-
-
-
-function showProducts(){
-
-
-let list = document.getElementById("list");
-
-
-list.innerHTML="";
-
-
-
-products.forEach((p,index)=>{
-
-
-list.innerHTML += `
-
-<div class="product">
-
-<h4>${p.name}</h4>
-
-<p>৳ ${p.price}</p>
-
-
-${p.image ? `<img src="${p.image}">` : ""}
-
-
-<button class="delete" onclick="deleteProduct(${index})">
-
-Delete
-
-</button>
-
-
-</div>
-
-`;
-
-});
 
 
 }
@@ -216,7 +186,54 @@ showProducts();
 
 
 
-showProducts();
+
+function showProducts(){
+
+
+let html="";
+
+
+
+products.forEach((p,index)=>{
+
+
+html += `
+
+<div class="product">
+
+
+<h3>${p.name}</h3>
+
+
+<p>৳ ${p.price}</p>
+
+
+<img src="${p.image}">
+
+
+<br>
+
+
+<button class="delete" onclick="deleteProduct(${index})">
+
+Delete
+
+</button>
+
+
+</div>
+
+`;
+
+
+});
+
+
+
+document.getElementById("list").innerHTML = html;
+
+
+}
 
 
 
@@ -226,4 +243,3 @@ showProducts();
 </body>
 
 </html>
-
