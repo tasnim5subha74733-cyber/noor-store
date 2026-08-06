@@ -1,0 +1,61 @@
+// Local Storage থেকে Product লোড
+let products = JSON.parse(localStorage.getItem("products")) || [];
+
+showProducts();
+
+function addProduct() {
+  let name = document.getElementById("name").value.trim();
+  let price = document.getElementById("price").value.trim();
+  let image = document.getElementById("image").value.trim();
+
+  if (!name || !price || !image) {
+    alert("সব তথ্য পূরণ করুন");
+    return;
+  }
+
+  products.push({ name, price, image });
+
+  // Save
+  localStorage.setItem("products", JSON.stringify(products));
+
+  // Clear Input
+  document.getElementById("name").value = "";
+  document.getElementById("price").value = "";
+  document.getElementById("image").value = "";
+
+  showProducts();
+}
+
+function deleteProduct(index) {
+  products.splice(index, 1);
+  localStorage.setItem("products", JSON.stringify(products));
+  showProducts();
+}
+
+function showProducts() {
+
+  let html = "";
+
+  products.forEach((p, index) => {
+
+    html += `
+    <div class="item">
+      <img src="${p.image}" width="120"><br><br>
+
+      <b>${p.name}</b><br>
+
+      <h3>৳${p.price}</h3>
+
+      <button onclick="deleteProduct(${index})"
+      style="background:red;margin-top:10px;">
+      Delete
+      </button>
+
+    </div>
+    `;
+
+  });
+
+  document.getElementById("list").innerHTML = html;
+
+}
