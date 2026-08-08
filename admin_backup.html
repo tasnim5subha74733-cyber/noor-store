@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Noor Store Admin</title>
+
+<style>
+
+body{
+    font-family: Arial, sans-serif;
+    background:#f2f2f2;
+    margin:0;
+}
+
+header{
+    background:#111;
+    color:white;
+    padding:20px;
+    text-align:center;
+}
+
+.container{
+    width:90%;
+    max-width:600px;
+    margin:20px auto;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+}
+
+input,button{
+    width:100%;
+    padding:12px;
+    margin:8px 0;
+    border-radius:5px;
+    border:1px solid #ccc;
+}
+
+button{
+    background:green;
+    color:white;
+    cursor:pointer;
+}
+
+.product{
+    background:#eee;
+    padding:10px;
+    margin-top:10px;
+    border-radius:8px;
+}
+
+.delete{
+    background:red;
+}
+
+img{
+    max-width:120px;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<header>
+<h2>🛒 Noor Store Admin</h2>
+</header>
+
+
+<div class="container">
+
+<h3>Product Add করুন</h3>
+
+
+<input id="name" placeholder="Product Name">
+
+
+<input id="price" placeholder="Price">
+
+
+<input id="image" placeholder="Image URL">
+
+
+<button onclick="addProduct()">
+Add Product
+</button>
+
+
+<h3>Product List</h3>
+
+
+<div id="list"></div>
+
+
+</div>
+
+
+
+<script>
+
+
+// Local Storage থেকে Product লোড
+
+let products = JSON.parse(localStorage.getItem("products")) || [];
+
+
+showProducts();
+
+
+
+function addProduct(){
+
+
+let name = document.getElementById("name").value.trim();
+
+let price = document.getElementById("price").value.trim();
+
+let image = document.getElementById("image").value.trim();
+
+
+
+if(!name || !price || !image){
+
+alert("সব তথ্য পূরণ করুন");
+
+return;
+
+}
+
+
+
+products.push({
+
+name:name,
+
+price:price,
+
+image:image
+
+});
+
+
+
+// Save
+
+localStorage.setItem("products", JSON.stringify(products));
+
+
+
+// Clear Input
+
+document.getElementById("name").value="";
+
+document.getElementById("price").value="";
+
+document.getElementById("image").value="";
+
+
+
+showProducts();
+
+
+}
+
+
+
+
+function deleteProduct(index){
+
+
+products.splice(index,1);
+
+
+localStorage.setItem("products", JSON.stringify(products));
+
+
+showProducts();
+
+
+}
+
+
+
+
+function showProducts(){
+
+
+let html="";
+
+
+
+products.forEach((p,index)=>{
+
+
+html += `
+
+<div class="product">
+
+
+<h3>${p.name}</h3>
+
+
+<p>৳ ${p.price}</p>
+
+
+<img src="${p.image}">
+
+
+<br>
+
+
+<button class="delete" onclick="deleteProduct(${index})">
+
+Delete
+
+</button>
+
+
+</div>
+
+`;
+
+
+});
+
+
+
+document.getElementById("list").innerHTML = html;
+
+
+}
+
+
+
+</script>
+
+
+</body>
+
+</html>
