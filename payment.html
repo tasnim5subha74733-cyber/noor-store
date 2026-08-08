@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Noor Store Payment</title>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    min-height:100vh;
+    background:#f4f6f8;
+}
+
+header{
+    background:#111;
+    color:white;
+    text-align:center;
+    padding:25px 15px;
+}
+
+.container{
+    width:92%;
+    max-width:450px;
+    margin:30px auto;
+}
+
+.payment-box{
+    background:white;
+    padding:25px;
+    border-radius:18px;
+    box-shadow:0 5px 20px rgba(0,0,0,.15);
+}
+
+h2{
+    text-align:center;
+    margin-top:0;
+}
+
+.amount{
+    text-align:center;
+    font-size:26px;
+    font-weight:bold;
+    color:#0b8f55;
+    margin:20px 0;
+}
+
+label{
+    display:block;
+    margin-top:15px;
+    font-weight:bold;
+}
+
+select,
+input{
+    width:100%;
+    padding:13px;
+    margin-top:7px;
+    border:1px solid #ccc;
+    border-radius:9px;
+    font-size:16px;
+}
+
+.number{
+    margin:15px 0;
+    padding:15px;
+    background:#f1f1f1;
+    border-radius:10px;
+    text-align:center;
+    font-weight:bold;
+}
+
+button{
+    width:100%;
+    padding:14px;
+    margin-top:15px;
+    border:0;
+    border-radius:9px;
+    background:#0b8f55;
+    color:white;
+    font-size:17px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.back{
+    background:#555;
+}
+
+#message{
+    text-align:center;
+    margin-top:15px;
+    font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>Noor Store</h1>
+    <p>Secure Payment</p>
+</header>
+
+<div class="container">
+
+<div class="payment-box">
+
+<h2>💳 Payment</h2>
+
+<div class="amount" id="amount">
+৳ 0
+</div>
+
+<label>Payment Method</label>
+
+<select id="paymentMethod">
+
+<option value="bkash">
+bKash
+</option>
+
+<option value="nagad">
+Nagad
+</option>
+
+</select>
+
+<div class="number" id="paymentNumber">
+bKash Number: 01828181285
+</div>
+
+<label>Transaction ID</label>
+
+<input
+    type="text"
+    id="transaction"
+    placeholder="Transaction ID লিখুন"
+>
+
+<button onclick="submitPayment()">
+Confirm Payment
+</button>
+
+<button class="back" onclick="goBack()">
+Back to Store
+</button>
+
+<p id="message"></p>
+
+</div>
+
+</div>
+
+
+<script>
+
+const paymentMethod =
+document.getElementById("paymentMethod");
+
+const paymentNumber =
+document.getElementById("paymentNumber");
+
+const amount =
+document.getElementById("amount");
+
+const transaction =
+document.getElementById("transaction");
+
+const message =
+document.getElementById("message");
+
+
+/*
+Payment amount
+*/
+
+const savedAmount =
+localStorage.getItem("orderAmount");
+
+if(savedAmount){
+
+    amount.textContent =
+    "৳ " + savedAmount;
+
+}
+
+
+/*
+Payment method change
+*/
+
+paymentMethod.addEventListener(
+    "change",
+    function(){
+
+        if(this.value === "bkash"){
+
+            paymentNumber.textContent =
+            "bKash Number: 01828181285";
+
+        }else{
+
+            paymentNumber.textContent =
+            "Nagad Number: 01828181285";
+
+        }
+
+    }
+);
+
+
+/*
+Submit Payment
+*/
+
+function submitPayment(){
+
+    const trx =
+    transaction.value.trim();
+
+    if(!trx){
+
+        message.textContent =
+        "Transaction ID দিন";
+
+        message.style.color =
+        "red";
+
+        return;
+    }
+
+
+    const paymentData = {
+
+        method: paymentMethod.value,
+
+        transaction: trx,
+
+        amount: savedAmount || "0",
+
+        date: new Date().toISOString()
+
+    };
+
+
+    localStorage.setItem(
+        "lastPayment",
+        JSON.stringify(paymentData)
+    );
+
+
+    message.textContent =
+    "Payment information submitted successfully!";
+
+    message.style.color =
+    "green";
+
+
+    transaction.value = "";
+
+}
+
+
+/*
+Back
+*/
+
+function goBack(){
+
+    window.location.href =
+    "index.html";
+
+}
+
+</script>
+
+</body>
+</html>
