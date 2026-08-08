@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -7,239 +8,498 @@
 <title>Noor Store Admin</title>
 
 <style>
+*{
+    box-sizing:border-box;
+}
 
 body{
-    font-family: Arial, sans-serif;
-    background:#f2f2f2;
     margin:0;
+    font-family:Arial,sans-serif;
+    background:#f2f4f7;
+    color:#222;
 }
 
 header{
     background:#111;
     color:white;
-    padding:20px;
+    padding:22px 15px;
     text-align:center;
 }
 
-.container{
-    width:90%;
-    max-width:600px;
-    margin:20px auto;
-    background:white;
-    padding:20px;
-    border-radius:10px;
+header h1{
+    margin:0 0 6px;
 }
 
-input,button{
+header p{
+    margin:0;
+    color:#ccc;
+}
+
+.container{
+    width:92%;
+    max-width:650px;
+    margin:25px auto;
+}
+
+.box{
+    background:white;
+    padding:22px;
+    border-radius:15px;
+    margin-bottom:20px;
+    box-shadow:0 5px 18px rgba(0,0,0,.12);
+}
+
+input{
     width:100%;
-    padding:12px;
+    padding:13px;
     margin:8px 0;
-    border-radius:5px;
     border:1px solid #ccc;
+    border-radius:8px;
+    font-size:16px;
 }
 
 button{
-    background:green;
+    width:100%;
+    padding:13px;
+    margin-top:8px;
+    border:0;
+    border-radius:8px;
+    background:#10a37f;
     color:white;
+    font-size:16px;
+    font-weight:bold;
     cursor:pointer;
 }
 
+button:hover{
+    opacity:.9;
+}
+
+.logout{
+    background:#d9534f;
+}
+
 .product{
-    background:#eee;
-    padding:10px;
-    margin-top:10px;
+    background:#f5f5f5;
+    padding:15px;
+    margin-top:12px;
+    border-radius:10px;
+}
+
+.product img{
+    width:120px;
+    max-height:150px;
+    object-fit:cover;
     border-radius:8px;
+    display:block;
+    margin:10px 0;
 }
 
 .delete{
-    background:red;
+    background:#d9534f;
 }
 
-img{
-    max-width:120px;
+#loading{
+    position:fixed;
+    inset:0;
+    background:#111;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    z-index:9999;
 }
 
+#adminContent{
+    display:none;
+}
+
+.denied{
+    color:#d9534f;
+    text-align:center;
+    font-weight:bold;
+}
 </style>
-
 </head>
-
 
 <body>
 
+<!-- Loading -->
+<div id="loading">
+    <div>
+        <h2>🔐 Checking Admin Access...</h2>
+        <p>Please wait...</p>
+    </div>
+</div>
+
+
+<!-- Admin Content -->
+<div id="adminContent">
 
 <header>
-<h2>🛒 Noor Store Admin</h2>
+    <h1>🛒 Noor Store Admin</h1>
+    <p id="adminEmail"></p>
 </header>
 
 
 <div class="container">
 
-<h3>Product Add করুন</h3>
+<!-- Add Product -->
+<div class="box">
 
+<h2>➕ Product Add করুন</h2>
 
-<input id="name" placeholder="Product Name">
+<input
+    id="name"
+    type="text"
+    placeholder="Product Name"
+>
 
+<input
+    id="price"
+    type="number"
+    placeholder="Price"
+>
 
-<input id="price" placeholder="Price">
-
-
-<input id="image" placeholder="Image URL">
-
+<input
+    id="image"
+    type="text"
+    placeholder="Image URL"
+>
 
 <button onclick="addProduct()">
-Add Product
+    Add Product
 </button>
 
+</div>
 
-<h3>Product List</h3>
 
+<!-- Product List -->
+<div class="box">
+
+<h2>📦 Product List</h2>
 
 <div id="list"></div>
 
+</div>
+
+
+<!-- Logout -->
+<div class="box">
+
+<button class="logout" onclick="logout()">
+    Logout
+</button>
+
+</div>
+
+</div>
 
 </div>
 
 
+<script type="module">
 
-<script>
+import { auth } from "./firebase.js";
 
-
-// Local Storage থেকে Product লোড
-
-let products = JSON.parse(localStorage.getItem("products")) || [];
-
-
-showProducts();
+import {
+    onAuthStateChanged,
+    signOut
+} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
 
 
+/*
+=================================================
+ONLY THESE TWO EMAILS ARE ADMIN
+=================================================
+*/
 
-function addProduct(){
-
-
-let name = document.getElementById("name").value.trim();
-
-let price = document.getElementById("price").value.trim();
-
-let image = document.getElementById("image").value.trim();
-
-
-
-if(!name || !price || !image){
-
-alert("সব তথ্য পূরণ করুন");
-
-return;
-
-}
+const ADMIN_EMAILS = [
+    "sadabshakik@gmail.com",
+    "tasnim5subha74733@gmail.com"
+];
 
 
+/*
+=================================================
+ELEMENTS
+=================================================
+*/
 
-products.push({
+const loading =
+document.getElementById("loading");
 
-name:name,
+const adminContent =
+document.getElementById("adminContent");
 
-price:price,
+const adminEmail =
+document.getElementById("adminEmail");
 
-image:image
+
+/*
+=================================================
+CHECK LOGIN + ADMIN
+=================================================
+*/
+
+onAuthStateChanged(auth, function(user){
+
+    if(!user){
+
+        // Not logged in
+        window.location.href = "login.html";
+
+        return;
+    }
+
+
+    const email =
+    user.email.toLowerCase();
+
+
+    /*
+    Check whether email is an Admin
+    */
+
+    if(!ADMIN_EMAILS.includes(email)){
+
+        loading.innerHTML = `
+            <div>
+                <h2>🚫 Access Denied</h2>
+                <p>আপনার Admin access নেই।</p>
+                <button id="backLogin">
+                    Back to Login
+                </button>
+            </div>
+        `;
+
+        document
+        .getElementById("backLogin")
+        .addEventListener("click", async function(){
+
+            await signOut(auth);
+
+            window.location.href = "login.html";
+
+        });
+
+        return;
+    }
+
+
+    /*
+    Admin approved
+    */
+
+    adminEmail.textContent =
+    "Admin: " + user.email;
+
+
+    loading.style.display = "none";
+
+    adminContent.style.display = "block";
+
+
+    showProducts();
 
 });
 
 
+/*
+=================================================
+PRODUCT SYSTEM
+=================================================
+*/
 
-// Save
-
-localStorage.setItem("products", JSON.stringify(products));
-
-
-
-// Clear Input
-
-document.getElementById("name").value="";
-
-document.getElementById("price").value="";
-
-document.getElementById("image").value="";
+let products =
+JSON.parse(localStorage.getItem("products")) || [];
 
 
+/*
+ADD PRODUCT
+*/
 
-showProducts();
+window.addProduct = function(){
 
+    const name =
+    document.getElementById("name").value.trim();
 
-}
+    const price =
+    document.getElementById("price").value.trim();
 
-
-
-
-function deleteProduct(index){
-
-
-products.splice(index,1);
-
-
-localStorage.setItem("products", JSON.stringify(products));
+    const image =
+    document.getElementById("image").value.trim();
 
 
-showProducts();
+    if(!name || !price || !image){
+
+        alert("সব তথ্য পূরণ করুন");
+
+        return;
+    }
 
 
-}
+    products.push({
+
+        name:name,
+        price:price,
+        image:image
+
+    });
 
 
+    localStorage.setItem(
+        "products",
+        JSON.stringify(products)
+    );
 
+
+    document.getElementById("name").value = "";
+    document.getElementById("price").value = "";
+    document.getElementById("image").value = "";
+
+
+    showProducts();
+
+
+    alert("Product successfully added!");
+
+};
+
+
+/*
+DELETE PRODUCT
+*/
+
+window.deleteProduct = function(index){
+
+    if(!confirm("এই Product delete করতে চান?")){
+
+        return;
+    }
+
+
+    products.splice(index,1);
+
+
+    localStorage.setItem(
+        "products",
+        JSON.stringify(products)
+    );
+
+
+    showProducts();
+
+};
+
+
+/*
+SHOW PRODUCTS
+*/
 
 function showProducts(){
 
+    const list =
+    document.getElementById("list");
 
-let html="";
+    if(products.length === 0){
 
+        list.innerHTML = `
+            <p style="text-align:center;color:#777;">
+                এখনো কোনো Product যোগ করা হয়নি।
+            </p>
+        `;
 
-
-products.forEach((p,index)=>{
-
-
-html += `
-
-<div class="product">
-
-
-<h3>${p.name}</h3>
-
-
-<p>৳ ${p.price}</p>
+        return;
+    }
 
 
-<img src="${p.image}">
+    let html = "";
 
 
-<br>
+    products.forEach(function(product,index){
+
+        html += `
+
+        <div class="product">
+
+            <h3>${escapeHTML(product.name)}</h3>
+
+            <p>
+                <strong>Price:</strong>
+                ৳ ${escapeHTML(product.price)}
+            </p>
+
+            <img
+                src="${escapeHTML(product.image)}"
+                alt="${escapeHTML(product.name)}"
+            >
+
+            <button
+                class="delete"
+                onclick="deleteProduct(${index})"
+            >
+                Delete
+            </button>
+
+        </div>
+
+        `;
+
+    });
 
 
-<button class="delete" onclick="deleteProduct(${index})">
-
-Delete
-
-</button>
-
-
-</div>
-
-`;
-
-
-});
-
-
-
-document.getElementById("list").innerHTML = html;
-
+    list.innerHTML = html;
 
 }
 
 
+/*
+=================================================
+HTML ESCAPE
+=================================================
+*/
+
+function escapeHTML(value){
+
+    return String(value)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+
+/*
+=================================================
+LOGOUT
+=================================================
+*/
+
+window.logout = async function(){
+
+    try{
+
+        await signOut(auth);
+
+        window.location.href =
+        "login.html";
+
+    }catch(error){
+
+        alert(
+            "Logout failed: " +
+            error.message
+        );
+
+    }
+
+};
 
 </script>
 
-
 </body>
-
 </html>
